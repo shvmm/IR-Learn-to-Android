@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>IR Code Studio</title><meta name="description" content="Learn infrared remote buttons from an ESP32 over USB. Save your remotes locally and export raw timings as JSON."><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b2733'/%3E%3Cpath d='M5 20h5V10h6v12h5V14h6' fill='none' stroke='%235ee4c0' stroke-width='3'/%3E%3C/svg%3E"><style>:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#14313d;background:#f1f5f7;font-size:16px;font-synthesis:none;--line:#dbe5e8;--teal:#086b60}*{box-sizing:border-box}body{margin:0}button,input{font:inherit}button{border:1px solid #cedbdf;background:white;color:#173b49;border-radius:8px;padding:10px 15px;font-weight:600;cursor:pointer;transition:background .15s,transform .15s}button:hover:not(:disabled){background:#eaf7f3;border-color:#6aaca1}button:active:not(:disabled){transform:translateY(1px)}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #17a890;outline-offset:3px}input{width:100%;min-width:0;border:1px solid #c6d6dc;border-radius:7px;padding:11px;color:#14313d;background:#fff}label{display:block;font-size:.875rem;font-weight:600;margin-bottom:7px}header{background:#0b2733;color:#fff;padding:22px max(24px,calc((100vw - 1220px)/2));display:flex;align-items:center;justify-content:space-between;gap:20px}.brand,.connection,.actions,.inline,.panel-heading,.capture-actions,.topline{display:flex;align-items:center;gap:12px}.brand-icon{color:#6de7c7;font-size:2.6rem;line-height:1}.brand h1{font-size:1.2rem;letter-spacing:-.025em;margin:0}.version{font-size:.75rem;color:#abd1d8;border:1px solid #3c5964;border-radius:5px;padding:2px 6px}.connection{font-size:.875rem;color:#b9ced6}.connection button{background:#b0f3dc;color:#133e38;border:0}.connection button:hover:not(:disabled){background:#d9ffef}main{max-width:1220px;margin:auto;padding:32px 24px 24px}.topline{justify-content:space-between;margin-bottom:25px}.eyebrow{font-size:.75rem;letter-spacing:.12em;font-weight:750;color:#57747e;margin:0 0 9px}h2{font-size:2rem;letter-spacing:-.04em;margin:0;font-weight:650}h3{font-size:1.12rem;margin:0;letter-spacing:-.02em}#notice{padding:12px 16px;margin-bottom:22px;border-left:3px solid #5cbfa8;background:#e3f1ec;border-radius:0 6px 6px 0;font-size:.9rem;line-height:1.5}#notice.error{background:#fff0e8;border-color:#cf612c;color:#85320d}.workspace{display:grid;grid-template-columns:260px minmax(0,1fr);gap:22px;align-items:start}.panel{background:white;border:1px solid var(--line);border-radius:12px;padding:23px;box-shadow:0 3px 8px #133b4903}.panel-heading{justify-content:space-between;margin-bottom:21px;flex-wrap:wrap}.badge{border-radius:20px;padding:5px 10px;font-size:.75rem;background:#eef4f5;color:#47636d}.inline button{padding:9px 15px;font-size:1.3rem}.remote-list{display:grid;gap:7px;margin-top:22px}.remote-item{text-align:left;width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;overflow-wrap:anywhere;font-weight:500;border-color:transparent;background:#f7f9fa}.remote-item.active{background:#e0f4ed;color:#095549;border-color:#a6d9c8}.remote-item small{font-size:.75rem;background:#fff8;padding:2px 6px;border-radius:4px}.local-note{font-size:.8rem;color:#67828c;line-height:1.6;border-top:1px solid var(--line);padding-top:20px;margin:25px 0 0}.main-column{display:grid;gap:22px}.muted{font-size:.875rem;color:#56717d;line-height:1.65}.signal{height:150px;border:1px solid #254f5e;border-radius:9px;background:#102f3d;color:#6cdfbb;position:relative;padding:12px 15px 31px;margin:18px 0}#wave{width:100%;height:100%;overflow:hidden}#signalLabel{position:absolute;bottom:11px;left:16px;font-family:ui-monospace,monospace;font-size:.75rem;color:#a4c5cf}.primary{background:var(--teal);border-color:var(--teal);color:white}.primary:hover:not(:disabled){background:#08594f;color:white}.capture-actions{flex-wrap:wrap}.capture-actions .muted{margin-left:auto;font-size:.8rem}#saveForm{border-top:1px solid var(--line);padding-top:20px;margin-top:20px}.save-grid{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:end}.device{font-size:.75rem;color:#657e88;margin:18px 0 0;overflow-wrap:anywhere}.small{font-size:.8rem;padding:7px 10px}.danger{color:#a23e32}.empty{padding:20px 0 25px;color:#67808a;text-align:center;line-height:1.7;font-size:.9rem}.button-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 0;border-top:1px solid #e8eef0}.button-row:first-child{border-top:0}.button-row strong{display:block;overflow-wrap:anywhere;font-size:.95rem}.button-row p{margin:5px 0 0;font-size:.8rem;color:#647f89}.row-actions{display:flex;gap:7px;flex-shrink:0}.setup{margin-top:25px;border:1px solid var(--line);border-radius:10px;background:#eaf0f3}.setup summary{padding:17px 21px;cursor:pointer;font-size:.9rem;font-weight:650}.setup-content{padding:0 21px 13px;max-width:950px;font-size:.875rem;line-height:1.75;color:#46626e}.setup-content p{margin-top:0}code{background:#dce7eb;padding:2px 4px;border-radius:3px;font-size:.85em}a{color:#086b60}footer{font-size:.75rem;color:#647e88;margin:25px 0 0;display:flex;justify-content:space-between;gap:15px}.listening .signal{border-color:#28aa8b;box-shadow:0 0 0 3px #1a987a1a}.listening #captureState{background:#def6eb;color:#00674f}[hidden]{display:none!important}@media(max-width:800px){header{padding:18px 20px;flex-wrap:wrap}.connection{width:100%;justify-content:space-between}main{padding:24px 16px}.workspace{grid-template-columns:1fr}.remote-list{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}.local-note{display:none}.topline{align-items:flex-start;gap:20px;flex-wrap:wrap}h2{font-size:1.75rem}.panel{padding:20px}.save-grid{grid-template-columns:1fr auto}.save-grid>div{grid-column:1/-1}.button-row{align-items:flex-start;flex-wrap:wrap}.capture-actions .muted{margin-left:0}.row-actions{flex-wrap:wrap}footer{flex-direction:column;gap:7px}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.tab-bar{display:flex;gap:5px;border-bottom:1px solid var(--line);padding-bottom:10px}.tab-bar button{border:0;background:transparent}.tab-bar button[aria-selected="true"]{background:#0b2733;color:white}.verify-result{padding:20px;border:1px solid var(--line);background:#f2f7f8;border-radius:9px;margin:20px 0}.verify-result p{font-size:.9rem;line-height:1.6;margin:8px 0 0}.verify-result[data-state="match"]{background:#e2f6ec;border-color:#64ae8b}.verify-result[data-state="mismatch"],.verify-result[data-state="error"]{background:#fff0e8;border-color:#d49b78}.verify-result[data-state="listening"]{background:#e6f2fa;border-color:#7cafc7}#verifyPanel .local-note{display:block}#cancelVerify{margin-bottom:15px}.verification-button-heading{display:flex;align-items:center;flex-wrap:wrap;gap:10px}.verification-badge{display:inline-flex;align-items:center;border:1px solid #c9d5da;border-radius:20px;padding:4px 10px;font-size:.75rem;font-weight:650;white-space:nowrap;background:#edf1f3;color:#50616a}.verification-badge.is-verified{background:#dcf6e5;border-color:#89cba0;color:#176334}.verification-badge.is-verified::before{content:"✓";margin-right:5px}.verification-badge.is-checking{background:#e6f2fa;border-color:#7cafc7;color:#245575}.verification-toggle{position:relative;display:inline-flex;align-items:center;gap:9px;margin:0;font-size:.875rem;font-weight:500;cursor:pointer}.verification-toggle input{position:absolute;left:0;top:0;width:42px;height:100%;opacity:0;margin:0;cursor:pointer}.toggle-track{width:42px;height:24px;flex-shrink:0;border-radius:20px;background:#82939d;position:relative;pointer-events:none}.toggle-track::after{content:"";position:absolute;left:3px;top:3px;width:18px;height:18px;background:white;border-radius:50%;transition:transform .15s}.verification-toggle input:checked+.toggle-track{background:#086b60}.verification-toggle input:checked+.toggle-track::after{transform:translateX(18px)}.verification-toggle input:focus-visible+.toggle-track{outline:3px solid #17a890;outline-offset:3px}.verification-toggle:has(input:disabled){opacity:.55;cursor:not-allowed}.toggle-state{font-size:.75rem;font-weight:700;margin-left:3px}#androidDialog{width:min(600px,calc(100vw - 32px));max-height:90vh;overflow:auto;border:1px solid var(--line);border-radius:14px;padding:26px;color:#14313d;background:white}#androidDialog::backdrop{background:#0b273399}#androidDialog h2{font-size:1.4rem}#androidDialog select{font:inherit;width:100%;padding:11px;border:1px solid #c6d6dc;border-radius:7px;margin-bottom:18px;background:white;color:#14313d}#androidDialog .export-consent{display:flex;align-items:flex-start;gap:10px;line-height:1.5}#androidDialog .export-consent input{width:18px;height:18px;flex-shrink:0}#androidError{color:#9c3827;font-size:.9rem}.topline>.actions{flex-wrap:wrap}#androidDialog .actions{justify-content:flex-end;flex-wrap:wrap}.sequence-controls{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:20px 0 12px}</style></head>
+<body>
+<header><div class="brand"><span class="brand-icon">∿</span><h1>IR Code Studio</h1><span class="version">0.6</span></div><div class="connection"><span id="connectionStatus">USB disconnected</span><button id="connect">Connect ESP32</button></div></header>
+<main>
+<div class="topline"><div><p class="eyebrow">YOUR REMOTE WORKBENCH</p><h2>Press. Capture. Keep.</h2></div><div class="actions"><button id="import">Import JSON</button><input id="file" type="file" accept=".json,application/json" hidden><button id="export">Export JSON</button><button id="androidExport">Export for Android</button></div></div>
+<div id="notice" role="status" aria-live="polite">Connect your flashed ESP32, create a remote, then learn its buttons.</div>
+<div class="workspace">
+<aside class="panel"><div class="panel-heading"><h3>Remotes</h3><span id="remoteCount" class="badge">0</span></div><form id="remoteForm"><label for="remoteName">New remote</label><div class="inline"><input id="remoteName" maxlength="120" required placeholder="Living room TV"><button aria-label="Add remote" type="submit">+</button></div></form><div id="remotes" class="remote-list"></div><p class="local-note">Saved in this browser.<br>Export JSON to keep a backup.</p></aside>
+<section class="main-column">
+<div class="tab-bar" role="tablist" aria-label="IR button tools"><button id="learnTab" role="tab" aria-selected="true" aria-controls="learnPanel">Learn &amp; save</button><button id="verifyTab" role="tab" aria-selected="false" aria-controls="verifyPanel" tabindex="-1">Verify buttons</button></div>
+<div id="learnPanel" class="main-column" role="tabpanel" aria-labelledby="learnTab">
+<div class="panel capture-panel"><div class="panel-heading"><div><p class="eyebrow">01 / CAPTURE</p><h3>Learn a button</h3></div><span id="captureState" class="badge">Ready when you are</span></div>
+<p class="muted" id="captureHint">Press the same remote button twice when prompted. Both captures must match before you can name and save it.</p>
+<div class="signal"><svg id="wave" viewBox="0 0 800 100" preserveAspectRatio="none" role="img" aria-label="Captured infrared pulse timings"><path d="M0 66H800" stroke="currentColor" fill="none" stroke-width="2"/></svg><span id="signalLabel">Waiting for a signal</span></div>
+<div class="capture-actions"><button id="learn" class="primary">Learn button</button><label class="verification-toggle" for="doublePress"><input id="doublePress" type="checkbox" role="switch" checked aria-describedby="captureHint"><span class="toggle-track" aria-hidden="true"></span><span>Double-press verification <span id="doublePressState" class="toggle-state">On</span></span></label><button id="stop" hidden>Cancel learning</button><span id="captureDetails" class="muted">Raw timings · microseconds</span></div>
+<p class="muted verification-advice">use verification for complex remotes such as AirCon remotes</p>
+<form id="saveForm" hidden><div class="save-grid"><div><label for="buttonName">Button name</label><input id="buttonName" maxlength="120" required placeholder="Power"></div><button class="primary" type="submit">Save button</button><button id="discard" type="button">Discard</button></div></form>
+<p id="device" class="device">Firmware information appears after connection.</p></div>
+<div class="panel"><div class="panel-heading"><div><p class="eyebrow">02 / COLLECTION</p><h3 id="collectionTitle">Choose a remote</h3></div><div class="actions"><button id="renameRemote" class="small" disabled>Rename</button><button id="deleteRemote" class="small danger" disabled>Delete remote</button></div></div><div id="buttons"></div></div>
+</div>
+<div id="verifyPanel" role="tabpanel" aria-labelledby="verifyTab" hidden>
+<div class="panel"><div class="panel-heading"><div><p class="eyebrow">CHECK A SAVED CODE</p><h3 id="verifyRemote">Choose a saved remote</h3></div></div>
+<div class="sequence-controls"><label class="verification-toggle" for="sequentialVerification"><input id="sequentialVerification" type="checkbox" role="switch" aria-describedby="verificationInstructions"><span class="toggle-track" aria-hidden="true"></span><span>Sequential verification <span id="sequentialState" class="toggle-state">Off</span></span></label><button id="startSequence" class="primary" hidden>Start sequence</button><span id="verificationProgress" class="badge" role="status" aria-live="polite">0 of 0 buttons verified</span></div><p id="verificationInstructions" class="muted">Select a saved button below, then press that button on the physical remote. One capture is compared with its saved code.</p>
+<div id="verifyResult" class="verify-result" data-state="idle" role="status" aria-live="polite"><strong id="verifyStatus">Select a saved button to verify</strong><p id="verifyDetail">Connect your ESP32, then click Verify beside a button.</p></div>
+<button id="cancelVerify" hidden>Cancel verification</button><div id="verificationButtons"></div>
+<p class="local-note">Results apply to this session. Verification does not change saved button codes. Code-changing protocols may not match across presses.</p>
+</div></div></section></div>
+<details class="setup"><summary>Firmware & setup</summary><div class="setup-content"><p><strong>1.</strong> Download <a href="data:application/zip;base64,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z7Bn6sE7feTiOLP4tCO3Bngk9SuZE316WJjSLtvSv1BLAwQUAAAACADlZD1dYF76/WkAAACtAAAAKgAAAGlyLWNvZGUtc3R1ZGlvL2Zpcm13YXJlL3Nka2NvbmZpZy5kZWZhdWx0c3WNMQ6DMAxFd06ToDJmMImJLFkxchLo5nP09oUBQYeuX+/9F6UslA3ralFKFUbroM0SLtC5hc8Q/xAz9KTQMHg/jc5dHEu+ZGPckG0HLfcPqenb8koSXo8NYqMND3v/QSmduRr85I7EF1BLAwQUAAAACADlZD1d7J2TjycAAAAlAAAAKAAAAGlyLWNvZGUtc3R1ZGlvL2Zpcm13YXJlL3Nka2NvbmZpZy51c2ItczNz9vdz83SPdw0OiHf29wv293GNDw12ig92DfJ09In3CnF0t63kAgBQSwECFAMUAAAACADlZD1d+xqsCfUSAABVKwAAGAAAAAAAAAAAAAAAgAEAAAAAaXItY29kZS1zdHVkaW8vUkVBRE1FLm1kUEsBAhQDFAAAAAgA5WQ9XWk/WASCKAAAboAAABsAAAAAAAAAAAAAAIABKxMAAGlyLWNvZGUtc3R1ZGlvL2Rpc3QvYXBwLm1qc1BLAQIUAxQAAAAIAOVkPV0uv6Sp1g4AAOElAAAeAAAAAAAAAAAAAACAAeY7AABpci1jb2RlLXN0dWRpby9kaXN0L2luZGV4Lmh0bWxQSwECFAMUAAAACADlZD1dC0bUtl0FAAD2DQAAHQAAAAAAAAAAAAAAgAH4SgAAaXItY29kZS1zdHVkaW8vZGlzdC9tb2RlbC5tanNQSwECFAMUAAAACADlZD1dplMQ8cEKAAAeIgAAHQAAAAAAAAAAAAAAgAGQUAAAaXItY29kZS1zdHVkaW8vZGlzdC9zdHlsZS5jc3NQSwECFAMUAAAACADlZD1dDTMZ7WYAAABvAAAAJgAAAAAAAAAAAAAAgAGMWwAAaXItY29kZS1zdHVkaW8vZmlybXdhcmUvQ01ha2VMaXN0cy50eHRQSwECFAMUAAAACADlZD1dw5CyIWIAAAB0AAAAKwAAAAAAAAAAAAAAgAE2XAAAaXItY29kZS1zdHVkaW8vZmlybXdhcmUvbWFpbi9DTWFrZUxpc3RzLnR4dFBLAQIUAxQAAAAIAOVkPV28Z0fg7gAAAKABAAAuAAAAAAAAAAAAAACAAeFcAABpci1jb2RlLXN0dWRpby9maXJtd2FyZS9tYWluL0tjb25maWcucHJvamJ1aWxkUEsBAhQDFAAAAAgA5WQ9Xc4L3u+3BwAAZRMAACMAAAAAAAAAAAAAAIABG14AAGlyLWNvZGUtc3R1ZGlvL2Zpcm13YXJlL21haW4vbWFpbi5jUEsBAhQDFAAAAAgA5WQ9XWBe+v1pAAAArQAAACoAAAAAAAAAAAAAAIABE2YAAGlyLWNvZGUtc3R1ZGlvL2Zpcm13YXJlL3Nka2NvbmZpZy5kZWZhdWx0c1BLAQIUAxQAAAAIAOVkPV3snZOPJwAAACUAAAAoAAAAAAAAAAAAAACAAcRmAABpci1jb2RlLXN0dWRpby9maXJtd2FyZS9zZGtjb25maWcudXNiLXMzUEsFBgAAAAALAAsAeQMAADFnAAAAAA==" download="ir-code-studio.zip">the source package</a>. In an ESP-IDF master environment, set the target to <code>esp32</code> or <code>esp32s3</code>, choose your receiver GPIO under <strong>IR Code Studio</strong> in <code>menuconfig</code>, then build and flash. The included README has both USB configurations.</p><p><strong>2.</strong> Close ESPHome logs and <code>idf.py monitor</code> before connecting here. The serial port must be free. Open this HTML file in desktop Chrome or Edge. If local-file USB access is blocked by your browser, serve the file on localhost or HTTPS. Open it in its own tab if an embedded preview blocks serial access.</p><p><strong>3.</strong> Click Learn, press and release one button, then wait for the prompt to press it again. After 600 ms of silence, each press is complete. With Double-press verification on, two matching captures unlock naming and saving. Turn the switch off to save after one complete press. The setting is remembered in this browser and cannot be changed during capture. Comparison allows normal timing jitter and ignores NEC hold-repeat frames; different codes or incomplete captures must be learned again. Protocols that deliberately change their code between presses may not verify.</p><p>Receiver modules do not measure the IR carrier frequency. It is exported as <code>null</code>, not guessed. Classic ESP32 captures are limited to about 512 RMT symbols; the S3 buffer holds 2048. Frames near the buffer limit are rejected. A 15 ms idle interval ends a frame by default. Long AC messages may require tuning and repeated validation.</p><p><strong>Validation:</strong> Source targets the current ESP-IDF RMT API. Firmware has not been compiled or tested on physical hardware in this environment. This app captures signals; transmitting requires additional hardware and firmware.</p></div></details>
+<footer>USB capture · Local storage · Portable JSON <span>No remote codes are uploaded.</span></footer>
+</main><dialog id="androidDialog" aria-labelledby="androidTitle"><form id="androidForm">
+<h2 id="androidTitle">Export for Android IR Blaster</h2><p class="muted">Create an importable backup for iodn/android-ir-blaster. Your native capture data stays unchanged.</p>
+<label for="androidScope">Remotes</label><select id="androidScope"><option value="selected">Selected remote</option><option value="all">All saved remotes</option></select>
+<label for="androidMode">Export mode</label><select id="androidMode"><option value="nec">NEC code · standard timing template</option><option value="raw">Recorded timings · first data frame only</option></select>
+<label for="androidFrequency">Carrier frequency (Hz)</label><input id="androidFrequency" type="number" min="10000" max="100000" step="1" value="38000" required><p class="muted">38,000 Hz matches your Ocean Light Android backup. It was not measured by the receiver. This value applies to every exported button; change it for other remotes if needed.</p>
+<p class="muted">NEC mode converts the command’s bit order and uses standard timings. Neither mode preserves capture timestamps or separate repeat frames. Keep your native JSON for those details.</p>
+<div id="rawExportWarning" hidden><p class="muted">Raw mode exports the first complete data frame, preserving its recorded durations. Additional frames and repeat frames are omitted. No missing inter-frame gaps are invented.</p><label class="export-consent"><input id="rawExportConsent" type="checkbox">Export only the first data frame of each button.</label></div>
+<p id="androidError" role="alert"></p><div class="actions"><button type="button" id="androidCancel">Cancel</button><button type="submit" class="primary">Download Android JSON</button></div>
+</form></dialog><script>(()=>{
+const FORMAT = 'ir-code-studio';
+const VERSION = 1;
+function validRaw(raw) {
+  return Array.isArray(raw) && raw.length >= 3 && raw.length <= 4096 && raw[0] > 0 && raw.every((n,i) => Number.isInteger(n) && n !== 0 && Math.abs(n) <= 32767 && (i === 0 || Math.sign(n) !== Math.sign(raw[i-1])));
+}
+function decodeNEC(raw) {
+  const close = (v,t) => Math.abs(v-t) < t * .25;
+  if (!validRaw(raw) || !close(raw[0],9000)) return null;
+  if (raw.length <= 4 && close(-raw[1],2250) && close(raw[2],560)) return {protocol:'NEC repeat'};
+  if ((raw.length !== 67 && raw.length !== 68) || !close(-raw[1],4500) || !close(raw[66],560)) return null;
+  const bytes = [0,0,0,0];
+  for (let bit=0; bit<32; bit++) {
+    const mark=raw[2+bit*2], space=-raw[3+bit*2];
+    if (!close(mark,560) || (!close(space,560) && !close(space,1690))) return null;
+    if (close(space,1690)) bytes[bit>>3] |= 1 << (bit%8);
+  }
+  if ((bytes[2]^bytes[3]) !== 255) return null;
+  const standard = (bytes[0]^bytes[1]) === 255;
+  return {protocol: standard ? 'NEC' : 'Extended NEC', address: standard ? bytes[0] : bytes[0] | bytes[1]<<8, command:bytes[2], bit_order:'lsb-first'};
+}
+function parseCapture(record) {
+  if (record?.type !== 'capture' || record.schema !== 1) throw new Error('Unsupported capture record.');
+  if (record.truncated !== false) throw new Error('Capture reached the receiver buffer limit. Try the ESP32-S3 or a shorter press.');
+  if (!validRaw(record.raw_us)) throw new Error('Incomplete or invalid pulse timings. Check the receiver and polarity.');
+  if (!Number.isSafeInteger(record.end_us) || record.end_us < 0 || !Number.isSafeInteger(record.sequence) || record.sequence < 0 || !Number.isSafeInteger(record.dropped) || record.dropped < 0) throw new Error('Invalid capture metadata.');
+  return {raw_us:[...record.raw_us], end_us:record.end_us, sequence:record.sequence, received_at:new Date().toISOString(), decoded:decodeNEC(record.raw_us)};
+}
+const name = v => typeof v === 'string' && v.trim().length > 0 && v.length <= 120;
+function validateProject(data) {
+  if (data?.format !== FORMAT || data.version !== VERSION || !Array.isArray(data.remotes) || data.remotes.length > 100) throw new Error('Expected IR Code Studio JSON, format version 1 (up to 100 remotes).');
+  const ids = new Set();
+  const remotes = data.remotes.map(r => {
+    if (!name(r.name) || !name(r.id) || ids.has(r.id) || !Array.isArray(r.buttons) || r.buttons.length > 500) throw new Error('Invalid remote or duplicate ID.');
+    ids.add(r.id);
+    const buttonIds = new Set();
+    return {id:r.id,name:r.name,buttons:r.buttons.map(b => {
+      if (!name(b.id) || buttonIds.has(b.id) || !name(b.name) || !Array.isArray(b.frames) || b.frames.length < 1 || b.frames.length > 100) throw new Error('Invalid button or frame count.');
+      buttonIds.add(b.id);
+      if (b.carrier_hz !== null && (!Number.isInteger(b.carrier_hz) || b.carrier_hz<10000 || b.carrier_hz>100000)) throw new Error('Invalid carrier frequency.');
+      return {id:b.id,name:b.name,carrier_hz:b.carrier_hz,frames:b.frames.map(f => {
+        if (!validRaw(f.raw_us) || !Number.isSafeInteger(f.end_us) || f.end_us<0 || !Number.isSafeInteger(f.sequence) || f.sequence<0 || typeof f.received_at!=='string' || !Number.isFinite(Date.parse(f.received_at))) throw new Error('Invalid saved capture.');
+        return {raw_us:[...f.raw_us],end_us:f.end_us,sequence:f.sequence,received_at:f.received_at,decoded:decodeNEC(f.raw_us)};
+      })};
+    })};
+  });
+  return {format:FORMAT,version:VERSION,remotes};
+}
+
+// Compare pulse envelopes with tolerance for receiver timing jitter.
+// Ignore the terminal idle space and NEC hold-repeat frames, never data bits.
+function matchingFrame(a,b){
+  const trim = raw => raw[raw.length-1]<0 ? raw.slice(0,-1) : raw;
+  const x=trim(a.raw_us), y=trim(b.raw_us);
+  if(a.decoded && b.decoded && (a.decoded.protocol!==b.decoded.protocol || a.decoded.address!==b.decoded.address || a.decoded.command!==b.decoded.command))return false;
+  return x.length===y.length && x.every((v,i)=>Math.sign(v)===Math.sign(y[i]) && Math.abs(v-y[i])<=Math.max(80,Math.max(Math.abs(v),Math.abs(y[i]))*.20));
+}
+function pressSignature(captures){
+  const result=[];
+  for(const f of captures){
+    if(f.decoded?.protocol==='NEC repeat')continue;
+    if(f.raw_us.length<7)continue;
+    if(!result.length || !matchingFrame(result[result.length-1],f))result.push(f);
+  }
+  return result;
+}
+function matchingPresses(first,second){
+  const a=pressSignature(first),b=pressSignature(second);
+  return a.length>0 && a.length===b.length && a.every((f,i)=>matchingFrame(f,b[i]));
+}
+function androidButton(button, mode, frequency){
+  const full=button.frames.filter(f=>decodeNEC(f.raw_us)?.protocol!=='NEC repeat' && f.raw_us.length>=7);
+  if(!full.length)throw new Error(`“${button.name}” has no complete data frame to export.`);
+  let code=null,rawData;
+  if(mode==='nec'){
+    const decoded=full.map(f=>decodeNEC(f.raw_us));
+    if(decoded.some(d=>!d||!['NEC','Extended NEC'].includes(d.protocol)))throw new Error(`“${button.name}” is not a recognised NEC code. Use recorded timings instead.`);
+    const d=decoded[0];
+    if(decoded.some(x=>x.protocol!==d.protocol||x.address!==d.address||x.command!==d.command))throw new Error(`“${button.name}” contains different data codes. A single NEC code cannot represent all of them.`);
+    const lo=d.address&255,hi=d.protocol==='NEC'?(lo^255):(d.address>>>8)&255;
+    const reverseByte=n=>{let v=0;for(let i=0;i<8;i++)v=(v<<1)|((n>>>i)&1);return v;};
+    code=0;for(const b of [lo,hi,d.command,d.command^255])code=(code*256+reverseByte(b))>>>0;
+    rawData='NEC:9000,4500,560,560,1690,560';
+  }else if(mode==='raw'){
+    if(!validRaw(full[0].raw_us))throw new Error(`“${button.name}” has invalid raw timings.`);
+    rawData=full[0].raw_us.map(Math.abs).join(' ');
+  }else throw new Error('Choose a supported Android export mode.');
+  return {id:button.id,code,rawData,frequency,image:button.name,isImage:false,necBitOrder:null,protocol:null,protocolParams:null,iconCodePoint:null,iconFontFamily:null,iconFontPackage:null,iconColor:null,buttonColor:null};
+}
+function androidBackup(remotes,mode,frequency){
+  if(!Number.isInteger(frequency)||frequency<10000||frequency>100000)throw new Error('Enter a carrier frequency from 10000 to 100000 Hz.');
+  if(!remotes.length||!remotes.some(r=>r.buttons.length))throw new Error('No saved buttons in the selected export scope.');
+  return {schema:'irblaster.backup',version:1,exportedAt:new Date().toISOString(),remotes:remotes.map((r,i)=>({id:i+1,name:r.name,useNewStyle:true,buttons:r.buttons.map(b=>androidButton(b,mode,frequency))})),macros:[]};
+}
+const $ = id => document.getElementById(id);
+const KEY = 'ir-code-studio-v1';
+let doublePress=true,requireSecondPress=true;
+try{doublePress=localStorage.getItem('ir-code-studio-double-press')!=='off';}catch{}
+let project={format:FORMAT,version:VERSION,remotes:[]}, selected=null;
+let port=null,reader=null,readTask=null,connecting=false,closing=false,device=null;
+let activeTab='learn',checking=false,checkTarget=null,sequentialVerification=false;
+const checkResults=new Map();
+let firstPress=[],verified=false;
+let learning=false,frames=[],draft=[],quietTimer=null,maxTimer=null,baselineDrops=0,sequence=null;
+let persistBlocked=false;
+function notice(message,error=false){$('notice').textContent=message;$('notice').classList.toggle('error',error);}
+try{const stored=localStorage.getItem(KEY);if(stored)project=validateProject(JSON.parse(stored));}
+catch{persistBlocked=true;notice('Saved data could not be read. Export or recover it before replacing browser storage. Import a valid backup to recover.',true);}
+selected=project.remotes[0]?.id??null;
+function persist(){
+  if(persistBlocked){notice('Changes are in memory only because existing browser data could not be read. Export JSON to keep them.',true);return false;}
+  try{localStorage.setItem(KEY,JSON.stringify(project));return true;}catch{notice('Browser storage is unavailable or full. Your work is in memory: export JSON before closing.',true);return false;}
+}
+function current(){return project.remotes.find(r=>r.id===selected);}
+function el(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;}
+function action(label,fn,cls='small'){const b=el('button',label,cls);b.type='button';b.onclick=fn;return b;}
+function render(){
+  $('doublePress').checked=doublePress;$('doublePress').disabled=learning||checking;
+  $('doublePressState').textContent=doublePress?'On':'Off';
+  $('captureHint').textContent=doublePress?'Press the same remote button twice when prompted. Both captures must match before you can name and save it.':'Press a remote button once, then release it. You can name and save the first complete capture.';
+  renderVerification();
+  $('remoteCount').textContent=project.remotes.length;
+  $('remotes').replaceChildren();
+  if(!project.remotes.length)$('remotes').append(el('p','Add your first remote above.','muted'));
+  project.remotes.forEach(r=>{
+    const b=action('',()=>{if(learning||checking)return notice('Finish or cancel verification before switching remotes.',true);if(draft.length&&!confirm('Discard the unsaved capture and switch remotes?'))return;discard();selected=r.id;$('verifyStatus').textContent='Select a saved button to verify';$('verifyDetail').textContent='Connect your ESP32, then click Verify beside a button.';$('verifyResult').dataset.state='idle';render();},'remote-item'+(selected===r.id?' active':''));
+    b.setAttribute('aria-pressed',String(selected===r.id));b.append(el('span',r.name),el('small',String(r.buttons.length)));$('remotes').append(b);
+  });
+  const r=current();$('collectionTitle').textContent=r?r.name:'Choose a remote';
+  $('renameRemote').disabled=!r||learning;$('deleteRemote').disabled=!r||learning;
+  $('learn').disabled=!port||!device||!r||learning||connecting||closing;
+  $('connect').disabled=connecting||closing;$('connect').textContent=connecting?'Connecting…':closing?'Disconnecting…':port?'Disconnect':'Connect ESP32';
+  $('connectionStatus').textContent=port?(device?'Receiver ready':'Waiting for firmware…'):'USB disconnected';
+  $('export').disabled=!project.remotes.length;$('androidExport').disabled=!project.remotes.some(r=>r.buttons.length)||learning||checking;$('import').disabled=learning||checking;
+  $('buttons').replaceChildren();
+  if(!r?.buttons.length)$('buttons').append(el('div',r?'No buttons yet. Learn one above to start your collection.':'Create or select a remote to collect its buttons.','empty'));
+  r?.buttons.forEach(b=>{
+    const row=el('div',undefined,'button-row'),info=el('div'),actions=el('div',undefined,'row-actions');
+    info.append(el('strong',b.name));
+    const decoded=b.frames.find(f=>f.decoded&&f.decoded.protocol!=='NEC repeat')?.decoded;
+    info.append(el('p',`${decoded?.protocol??'Raw IR'} · ${b.frames.length} frame${b.frames.length===1?'':'s'} · ${b.frames.reduce((s,f)=>s+f.raw_us.length,0)} timings`));
+    actions.append(action('View',()=>{if(learning)return notice('Finish learning before viewing another capture.',true);draw(b.frames[0].raw_us);$('signalLabel').textContent=`${b.name} · frame 1 of ${b.frames.length}`;$('captureDetails').textContent=decoded?`${decoded.protocol} · address ${decoded.address} · command ${decoded.command}`:'Raw timings · protocol unrecognised';}),
+      action('Rename',()=>{const n=prompt('Button name',b.name);if(n?.trim()&&n.trim().length<=120){b.name=n.trim();persist();render();}}),
+      action('Delete',()=>{if(confirm(`Delete “${b.name}”?`)){r.buttons=r.buttons.filter(x=>x.id!==b.id);persist();render();}},'small danger'));
+    row.append(info,actions);$('buttons').append(row);
+  });
+}
+function renderVerification(){
+  const isVerify=activeTab==='verify';
+  $('learnPanel').hidden=isVerify;$('verifyPanel').hidden=!isVerify;
+  for(const tab of ['learn','verify']){
+    const button=$(tab+'Tab'),selected=activeTab===tab;
+    button.setAttribute('aria-selected',String(selected));button.tabIndex=selected?0:-1;
+  }
+  const r=current();$('verifyRemote').textContent=r?r.name:'Choose a saved remote';
+  $('sequentialVerification').checked=sequentialVerification;
+  $('sequentialVerification').disabled=learning;
+  $('sequentialState').textContent=sequentialVerification?'On':'Off';
+  $('startSequence').hidden=!sequentialVerification;
+  $('startSequence').disabled=checking||learning||!port||!device||!r?.buttons.length||connecting||closing;
+  const total=r?.buttons.length??0,passed=r?.buttons.filter(b=>checkResults.get(r.id+'/'+b.id)?.status==='match').length??0;
+  $('verificationProgress').textContent=`${passed} of ${total} buttons verified`;
+  $('verificationInstructions').textContent=sequentialVerification?'Start the sequence or click Verify beside any button. Press each requested button once; a match automatically advances in saved order. A mismatch lets you retry the same button.':'Select a saved button below, then press that button on the physical remote. One capture is compared with its saved code.';
+  $('cancelVerify').hidden=!checking;$('verificationButtons').replaceChildren();
+  if(!r?.buttons.length)$('verificationButtons').append(el('div','No saved buttons in this remote. Add buttons in the Learn & save tab first.','empty'));
+  r?.buttons.forEach(b=>{
+    const row=el('div',undefined,'button-row'),info=el('div');
+    const result=checkResults.get(r.id+'/'+b.id);
+    const inProgress=checking&&checkTarget.id===b.id;
+    const isVerified=result?.status==='match';
+    const heading=el('div',undefined,'verification-button-heading');
+    const badge=el('span',inProgress?'Verifying…':isVerified?'Verified':'Unverified','verification-badge '+(inProgress?'is-checking':isVerified?'is-verified':'is-unverified'));
+    badge.setAttribute('aria-label',b.name+': '+badge.textContent);
+    heading.append(el('strong',b.name),badge);info.append(heading);
+    const labels={match:'Match confirmed',mismatch:'Did not match',error:'Could not verify',cancelled:'Cancelled'};
+    info.append(el('p',checking&&checkTarget.id===b.id?'Listening…':result?labels[result.status]+' · '+result.time:'Not checked this session'));
+    const button=action('Verify',()=>startSavedCheck(b));button.disabled=checking||learning||!port||!device||connecting||closing;
+    row.append(info,button);$('verificationButtons').append(row);
+  });
+}
+function startSavedCheck(button){
+  if(!port||!device||learning||checking||!current())return;
+  checking=true;checkTarget={id:button.id,remoteId:current().id,name:button.name,frames:structuredClone(button.frames)};
+  frames=[];sequence=null;baselineDrops=device.dropped;endTimers();
+  $('verifyResult').dataset.state='listening';
+  const position=current().buttons.findIndex(b=>b.id===button.id)+1;
+  $('verifyStatus').textContent=sequentialVerification?`Button ${position} of ${current().buttons.length} · press “${button.name}”`:`Press “${button.name}” once`;
+  $('verifyDetail').textContent='Point the remote at the receiver. Make one short press, then release.';
+  notice(`Checking “${button.name}” against its saved code.`);
+  maxTimer=setTimeout(()=>finishSavedCheck('error','No signal received. Check the connection and receiver, then try again.'),8000);render();
+}
+function finishSavedCheck(status,message){
+  if(!checking)return;
+  const completed=checkTarget;
+  endTimers();checking=false;frames=[];sequence=null;
+  checkResults.set(checkTarget.remoteId+'/'+checkTarget.id,{status,time:new Date().toLocaleTimeString()});
+  $('verifyResult').dataset.state=status;
+  const label={match:'Match confirmed',mismatch:'No match',error:'Could not verify',cancelled:'Verification cancelled'}[status];
+  $('verifyStatus').textContent=label+' · '+checkTarget.name;$('verifyDetail').textContent=message;
+  checkTarget=null;notice(message,status==='mismatch'||status==='error');render();
+  if(sequentialVerification&&port&&device&&!closing&&activeTab==='verify'&&current()?.id===completed.remoteId){
+    const index=current().buttons.findIndex(b=>b.id===completed.id);
+    if(status==='match'&&index>=0){
+      const next=current().buttons[index+1];
+      if(next){
+        startSavedCheck(next);
+        $('verifyDetail').textContent=`“${completed.name}” verified. Release it, then press “${next.name}” once.`;
+        notice(`“${completed.name}” verified. Now press “${next.name}”.`);
+      }else{
+        $('verifyStatus').textContent='Sequence complete';
+        $('verifyDetail').textContent=`Reached the last saved button. ${$('verificationProgress').textContent}.`;
+        notice(`Sequence complete. ${$('verificationProgress').textContent}.`);
+      }
+    }else if(status==='mismatch'&&index>=0){
+      startSavedCheck(current().buttons[index]);
+      $('verifyDetail').textContent=`That code did not match “${completed.name}”. Release the button, then try “${completed.name}” again.`;
+      notice(`No match. Still waiting for “${completed.name}”.`,true);
+    }
+  }
+}
+function switchTab(tab){
+  if(tab===activeTab)return;
+  if(learning){if(!confirm('Cancel the current learning session and switch tabs?'))return;failCapture('Learning cancelled.');}
+  if(checking)finishSavedCheck('cancelled','Verification cancelled.');
+  activeTab=tab;render();
+}
+$('learnTab').onclick=()=>switchTab('learn');$('verifyTab').onclick=()=>switchTab('verify');
+for(const tab of ['learn','verify'])$(tab+'Tab').addEventListener('keydown',e=>{
+  if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();const next=e.key==='Home'?'learn':e.key==='End'?'verify':activeTab==='learn'?'verify':'learn';switchTab(next);$(activeTab+'Tab').focus();}
+});
+$('sequentialVerification').onchange=()=>{
+  sequentialVerification=$('sequentialVerification').checked;render();
+};
+$('startSequence').onclick=()=>{
+  const r=current();if(!r||checking)return;
+  const first=r.buttons.find(b=>checkResults.get(r.id+'/'+b.id)?.status!=='match')??r.buttons[0];
+  if(first)startSavedCheck(first);
+};
+$('cancelVerify').onclick=()=>finishSavedCheck('cancelled','Verification cancelled.');
+
+function draw(raw){
+  if(!raw){$('wave').innerHTML='<path d="M0 66H800" stroke="currentColor" fill="none" stroke-width="2"/>';return;}
+  const total=raw.reduce((a,b)=>a+Math.abs(b),0);let x=0;const points=['0,75'];
+  for(const v of raw){const y=v>0?25:75;points.push(`${x},${y}`);x+=Math.abs(v)/total*800;points.push(`${x},${y}`);}
+  const line=document.createElementNS('http://www.w3.org/2000/svg','polyline');line.setAttribute('points',points.join(' '));line.setAttribute('fill','none');line.setAttribute('stroke','currentColor');line.setAttribute('stroke-width','2');line.setAttribute('vector-effect','non-scaling-stroke');$('wave').replaceChildren(line);
+}
+function discard(){endTimers();learning=false;firstPress=[];verified=false;draft=[];frames=[];$('stop').hidden=true;document.body.classList.remove('listening');$('saveForm').hidden=true;$('buttonName').value='';$('captureState').textContent='Ready when you are';$('signalLabel').textContent='Waiting for a signal';$('captureDetails').textContent='Raw timings · microseconds';draw(null);}
+function endTimers(){clearTimeout(quietTimer);clearTimeout(maxTimer);quietTimer=maxTimer=null;}
+function failCapture(message){if(checking){finishSavedCheck('error',message);return;}endTimers();learning=false;firstPress=[];verified=false;frames=[];draft=[];$('saveForm').hidden=true;$('stop').hidden=true;document.body.classList.remove('listening');$('captureState').textContent='Try again';notice(message,true);render();}
+function finishCapture(){
+  if(checking){
+    if(!pressSignature(frames).length)return finishSavedCheck('error','No complete button code received. Release the button and try a short press.');
+    const matched=matchingPresses(checkTarget.frames,frames);
+    finishSavedCheck(matched?'match':'mismatch',matched?'Match confirmed. The received code matches the saved button.':'No match. The received code differs from the saved button.');return;
+  }
+  if(!learning)return;
+  endTimers();
+  if(!pressSignature(frames).length)return failCapture('No complete button code received. Start again and use a short press.');
+  if(!requireSecondPress){
+    draft=frames;frames=[];firstPress=[];verified=true;learning=false;
+    document.body.classList.remove('listening');$('stop').hidden=true;
+    draw(draft[0].raw_us);$('captureState').textContent='Captured · single press';
+    $('signalLabel').textContent='Capture ready · double-press verification off';
+    $('saveForm').hidden=false;$('buttonName').focus();
+    notice('Capture ready. Name the button and save it. Double-press verification was off.');render();return;
+  }
+  if(!firstPress.length){
+    firstPress=frames;frames=[];
+    $('captureState').textContent='Press 1 of 2 captured';
+    $('signalLabel').textContent='First press captured · waiting for verification';
+    notice('Release the button, then press the SAME button once more to verify it.');
+    maxTimer=setTimeout(()=>failCapture('Verification timed out. Click Learn and press the same button twice when prompted.'),12000);
+    return;
+  }
+  if(!matchingPresses(firstPress,frames))return failCapture('The two presses did not match. Nothing was saved. Click Learn and try two short presses of the same button.');
+  draft=firstPress;firstPress=[];frames=[];verified=true;learning=false;
+  document.body.classList.remove('listening');$('stop').hidden=true;
+  draw(draft[0].raw_us);$('captureState').textContent='Verified · 2 matching presses';
+  $('signalLabel').textContent='Two presses matched · ready to save';
+  $('saveForm').hidden=false;$('buttonName').focus();
+  notice('Both presses match. Name the verified button and save it.');render();
+}
+$('doublePress').onchange=()=>{
+  if(learning||checking){$('doublePress').checked=doublePress;return;}
+  doublePress=$('doublePress').checked;
+  try{localStorage.setItem('ir-code-studio-double-press',doublePress?'on':'off');}catch{}
+  render();
+};
+$('learn').onclick=()=>{
+  if(!port||!device||!current())return;
+  if(draft.length&&!confirm('Discard the unsaved capture and learn again?'))return;
+  discard();requireSecondPress=doublePress;learning=true;baselineDrops=device.dropped;sequence=null;
+  $('captureState').textContent=requireSecondPress?'Listening · press 1 of 2':'Listening · single press';$('stop').hidden=false;document.body.classList.add('listening');notice(requireSecondPress?'Press the button once, then release it. Wait for the second-press prompt.':'Press the button once, then release it.');
+  maxTimer=setTimeout(()=>failCapture('No signal received. Check the receiver and try again.'),8000);render();
+};
+$('stop').onclick=()=>failCapture('Learning cancelled. No button was saved.');$('discard').onclick=()=>{discard();render();};
+$('saveForm').onsubmit=e=>{
+  e.preventDefault();const r=current(),name=$('buttonName').value.trim();if(!r||!verified||!draft.length||!name)return;
+  if(r.buttons.length>=500)return notice('This remote has reached the 500 button limit.',true);
+  if(r.buttons.some(b=>b.name.toLowerCase()===name.toLowerCase()))return notice('That button name is already used. Choose another name; your capture is still here.',true);
+  r.buttons.push({id:crypto.randomUUID(),name,carrier_hz:null,frames:structuredClone(draft)});
+  const saved=persist();discard();render();if(saved)notice(`Saved “${name}” to ${r.name}.`);
+};
+$('remoteForm').onsubmit=e=>{
+  e.preventDefault();if(learning||checking)return notice('Finish or cancel the current capture before adding a remote.',true);
+  const name=$('remoteName').value.trim();if(!name)return;if(project.remotes.length>=100)return notice('The 100 remote limit has been reached.',true);
+  if(draft.length&&!confirm('Discard the unsaved capture and create a remote?'))return;
+  discard();const r={id:crypto.randomUUID(),name,buttons:[]};project.remotes.push(r);selected=r.id;$('remoteName').value='';persist();render();
+};
+$('renameRemote').onclick=()=>{const r=current();if(!r)return;const n=prompt('Remote name',r.name);if(n?.trim()&&n.trim().length<=120){r.name=n.trim();persist();render();}};
+$('deleteRemote').onclick=()=>{const r=current();if(r&&confirm(`Delete “${r.name}” and all its saved buttons?`)){discard();project.remotes=project.remotes.filter(x=>x.id!==r.id);selected=project.remotes[0]?.id??null;persist();render();}};
+function download(data,filename){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+function updateAndroidMode(){
+  const raw=$('androidMode').value==='raw';
+  $('rawExportWarning').hidden=!raw;$('rawExportConsent').required=raw;$('rawExportConsent').disabled=!raw;
+}
+$('androidExport').onclick=()=>{
+  $('androidScope').value=current()?.buttons.length?'selected':'all';
+  $('androidMode').value='nec';$('rawExportConsent').checked=false;$('androidError').textContent='';
+  updateAndroidMode();$('androidDialog').showModal();
+};
+$('androidMode').onchange=updateAndroidMode;
+$('androidCancel').onclick=()=>$('androidDialog').close();
+$('androidForm').onsubmit=e=>{
+  e.preventDefault();$('androidError').textContent='';
+  try{
+    const mode=$('androidMode').value;
+    if(mode==='raw'&&!$('rawExportConsent').checked)throw new Error('Confirm the first-frame-only export before continuing.');
+    const remotes=$('androidScope').value==='all'?project.remotes:current()?[current()]:[];
+    const data=androidBackup(remotes,mode,Number($('androidFrequency').value));
+    download(data,'irblaster_backup_'+Date.now()+'.json');$('androidDialog').close();
+    notice(`Exported ${data.remotes.reduce((n,r)=>n+r.buttons.length,0)} buttons for Android IR Blaster. Keep your native JSON as the full capture archive.`);
+  }catch(e){$('androidError').textContent=e.message;}
+};
+$('export').onclick=()=>{download({...project,exported_at:new Date().toISOString(),timing_convention:'positive=mark; negative=space; microseconds',carrier_note:'Unknown: demodulating receiver does not measure carrier frequency.'},'ir-remotes.json');notice('Exported saved buttons. Unsaved captures are not included.');};
+$('import').onclick=()=>$('file').click();
+$('file').onchange=async()=>{
+  const file=$('file').files[0];$('file').value='';if(!file)return;
+  try{if(file.size>20*1024*1024)throw new Error('JSON file exceeds 20 MB.');const next=validateProject(JSON.parse(await file.text()));
+    if((project.remotes.length||draft.length||persistBlocked)&&!confirm('Replace this browser’s remote collection with the imported file? Export your current collection first if you need it.'))return;
+    checkResults.clear();$('verifyStatus').textContent='Select a saved button to verify';$('verifyDetail').textContent='Connect your ESP32, then click Verify beside a button.';$('verifyResult').dataset.state='idle';project=next;selected=project.remotes[0]?.id??null;persistBlocked=false;discard();const saved=persist();render();if(saved)notice(`Imported ${project.remotes.length} remote${project.remotes.length===1?'':'s'}.`);
+  }catch(e){notice(`Import failed: ${e.message} Your current collection has not been changed.`,true);}
+};
+function onLine(line){
+  let msg;try{msg=JSON.parse(line);}catch{return;} // Ignore ROM boot messages and ESP-IDF logs.
+  if(msg.type==='hello'){
+    if(msg.schema!==1||typeof msg.firmware!=='string'||!msg.firmware.startsWith('ir-code-studio/')||!Number.isSafeInteger(msg.dropped)||msg.dropped<0)return;
+    if((learning||checking)&&device&&msg.dropped!==baselineDrops){device=msg;return failCapture('The device dropped data. Release the button and try a short press.');}
+    device=msg;$('device').textContent=`${msg.target} · GPIO ${msg.gpio} · ESP-IDF ${msg.idf} · frame gap ${msg.idle_us/1000} ms`;
+    render();return;
+  }
+  if(msg.type==='error'){if(learning||checking)failCapture(msg.message||'Firmware reported an error.');else notice(msg.message||'Firmware reported an error.',true);return;}
+  if(msg.type!=='capture')return;
+  if(device)device.dropped=msg.dropped;
+  if(!learning&&!checking)return;
+  try{
+    if(msg.dropped!==baselineDrops)throw new Error('The USB output queue dropped a frame. Try a shorter button press.');
+    if(sequence!==null&&msg.sequence!==sequence+1)throw new Error('A frame was lost or the device restarted. Learn this button again.');
+    const f=parseCapture(msg);sequence=msg.sequence;frames.push(f);
+    if(frames.length>100)throw new Error('Too many frames in one capture. Try a short press.');
+    if(checking)$('verifyStatus').textContent=`Receiving ${frames.length} frame${frames.length===1?'':'s'}…`;
+    if(!checking){
+    $('captureState').textContent=!requireSecondPress?'Receiving single press':firstPress.length?'Receiving press 2 of 2':'Receiving press 1 of 2';draw(frames[0].raw_us);$('signalLabel').textContent=`${frames.length} frame${frames.length===1?'':'s'} · ${frames.reduce((s,x)=>s+x.raw_us.length,0)} timings`;
+    $('captureDetails').textContent=frames.find(x=>x.decoded)?.decoded.protocol??'Raw IR · no decoder match';
+    }
+    clearTimeout(quietTimer);quietTimer=setTimeout(finishCapture,600);
+    if(frames.length===1){clearTimeout(maxTimer);maxTimer=setTimeout(()=>failCapture(checking||!requireSecondPress?'The button was held too long. Try a short press.':'The button was held too long. Use two separate short presses, releasing between them.'),4000);}
+  }catch(e){failCapture(e.message);}
+}
+async function readLoop(p){
+  const decoder=new TextDecoder();let buffer='';reader=p.readable.getReader();
+  try{
+    while(true){const {value,done}=await reader.read();if(done)break;buffer+=decoder.decode(value,{stream:true});
+      let n;while((n=buffer.indexOf('\n'))>=0){const line=buffer.slice(0,n).trim();buffer=buffer.slice(n+1);onLine(line);}
+      if(buffer.length>200000){buffer='';if(learning||checking)failCapture('Serial record is too large or missing a newline. Check the firmware.');}
+    }
+  }catch(e){if(!closing)notice(`USB connection ended: ${e.message}`,true);}
+  finally{reader.releaseLock();reader=null;if(learning||checking)failCapture('USB disconnected during capture. Reconnect and try again.');}
+}
+async function disconnect(){
+  if(!port)return;closing=true;render();const p=port;
+  try{await reader?.cancel();await readTask;await p.close();}catch(e){notice(`Disconnect: ${e.message}`,true);}
+  finally{port=null;device=null;closing=false;readTask=null;$('device').textContent='Firmware information appears after connection.';render();}
+}
+$('connect').onclick=async()=>{
+  if(port)return disconnect();
+  if(!window.isSecureContext||!navigator.serial)return notice('USB learning needs desktop Chrome or Edge in a secure context (HTTPS or localhost). You can still import and export JSON here.',true);
+  connecting=true;render();let candidate;
+  try{candidate=await navigator.serial.requestPort();await candidate.open({baudRate:115200,bufferSize:65536});port=candidate;device=null;
+    readTask=readLoop(candidate);readTask.then(async()=>{if(port===candidate&&!closing){try{await candidate.close();}catch{}port=null;device=null;render();}});
+    notice('USB connected. Waiting for the firmware announcement (normally within two seconds).');
+  }catch(e){notice(e.name==='NotFoundError'?'No serial port selected.':`Could not connect: ${e.message}. Close any serial monitor using this port.`,e.name!=='NotFoundError');}
+  finally{connecting=false;render();}
+};
+window.addEventListener('beforeunload',e=>{if(learning||checking||draft.length){e.preventDefault();e.returnValue='';}});
+// This read-only tool exposes exactly the same locally saved collection as the UI.
+if(document.modelContext?.registerTool){
+  const lifecycle=new AbortController();
+  try{Promise.resolve(document.modelContext.registerTool({name:'read_ir_remote_collection',title:'Read saved IR remotes',description:'Read saved remote names, button names, frame counts and decoded protocols in this browser. Does not connect to USB or start a capture.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true,untrustedContentHint:true},execute(input){if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).length)throw new Error('Expected an empty object.');return {remotes:project.remotes.map(r=>({id:r.id,name:r.name,buttons:r.buttons.map(b=>({id:b.id,name:b.name,frames:b.frames.length,protocols:[...new Set(b.frames.map(f=>f.decoded?.protocol??'Raw IR'))]}))}))};}},{signal:lifecycle.signal})).catch(()=>{});}catch{}
+  window.addEventListener('pagehide',()=>lifecycle.abort(),{once:true});
+}
+render();
+if(!navigator.serial)notice('This browser cannot connect over USB. Use desktop Chrome or Edge for learning. JSON import/export still works.',true);
+
+})();</script></body></html>
