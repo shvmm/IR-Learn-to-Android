@@ -1,0 +1,13 @@
+menu "IR Code Studio"
+    config IR_RX_GPIO
+        int "IR receiver output GPIO (check your board wiring)"
+        range 0 48
+        default 9
+    config IR_ACTIVE_LOW
+        bool "Receiver output is active low (typical demodulating receiver)"
+        default y
+    config IR_IDLE_US
+        int "End a frame after this long without an edge (microseconds)"
+        range 10000 30000
+        default 15000
+endmenu

@@ -1,12 +1,11 @@
 # IR receiver firmware: ESP32-S3 / GPIO9
 
 Configured for the existing IR Code Studio HTML app:
-
-* ESP32-S3 target
-* IR receiver OUT connected to GPIO9
-* Active-low demodulated receiver output
-* Native USB Serial/JTAG console by default
-* 15 ms frame-ending idle threshold
+- ESP32-S3 target
+- IR receiver OUT connected to GPIO9
+- Active-low demodulated receiver output
+- Native USB Serial/JTAG console by default
+- 15 ms frame-ending idle threshold
 
 ## Build and flash
 
@@ -32,4 +31,3 @@ Keep the receiver's existing working power and ground wiring; its output must be
 This is firmware source, not a compiled binary. It targets the current ESP-IDF master RMT API, but has not been compiled or hardware-tested in this environment. Record your ESP-IDF commit when building; compatibility with every future master commit cannot be guaranteed.
 
 No Arduino framework or external firmware libraries are required. Captures are receive-only. The browser preserves raw microsecond timings; carrier frequency cannot be measured by an ordinary demodulating receiver.
-
